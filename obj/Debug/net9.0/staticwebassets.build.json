@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "ppmCKBsOmTrQCaNHSWOhSQZjkazP2DDJLeUgiYQHpJo=",
+  "Source": "ContentSafety.Ai",
+  "BasePath": "_content/ContentSafety.Ai",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
