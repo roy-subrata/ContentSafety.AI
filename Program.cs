@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 string Endpoint = Environment.GetEnvironmentVariable("ENDPOINT", EnvironmentVariableTarget.User) ?? throw new ArgumentNullException("Endpoint not found");
-var key = Environment.GetEnvironmentVariable("KEY", EnvironmentVariableTarget.User) ?? throw new ArgumentNullException("Key not found");
+string key = Environment.GetEnvironmentVariable("KEY", EnvironmentVariableTarget.User) ?? throw new ArgumentNullException("Key not found");
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -47,15 +47,11 @@ app.MapPost("/analyze-image", async ([FromForm] IFormFile request, [FromServices
     if (request == null || request.Length == 0)
         return Results.BadRequest("No file uploaded.");
 
-    // Read file into BinaryData
     using var ms = new MemoryStream();
     await request.CopyToAsync(ms);
     var binaryData = new BinaryData(ms.ToArray());
 
-    // Call Content Safety
     var response = await safetyManager.AnalyzeImageAsync(binaryData);
-
-    // Return response
     return Results.Ok(new
     {
         categoriesAnalysis = response.CategoriesAnalysis
@@ -63,7 +59,7 @@ app.MapPost("/analyze-image", async ([FromForm] IFormFile request, [FromServices
             .ToList(),
     });
 })
-.Accepts<IFormFile>("multipart/form-data") // ⚡ tells Swagger it’s a form upload
+.Accepts<IFormFile>("multipart/form-data")
 .Produces(StatusCodes.Status200OK);
 
 app.MapPost("/blockList", async ([FromBody] CreateBlockList request, [FromServices] ContentSafetyManager safetyManager) =>
@@ -71,6 +67,5 @@ app.MapPost("/blockList", async ([FromBody] CreateBlockList request, [FromServic
     await safetyManager.AddOrUpdateBlockListAsync(request);
     return Results.Ok();
 });
-
 
 app.Run();
